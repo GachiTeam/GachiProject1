@@ -30,7 +30,7 @@ public class BasicAttackComponent : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        EnemyActor enemy = other.gameObject.GetComponent<EnemyActor>();
+        IHitable enemy = other.gameObject.GetComponent<IHitable>();
         if (enemy != null)
         {
             enemy.IsHit();

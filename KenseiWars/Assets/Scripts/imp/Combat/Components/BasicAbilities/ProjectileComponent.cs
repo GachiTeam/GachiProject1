@@ -26,6 +26,16 @@ public class ProjectileComponent : MonoBehaviour
         transform.Translate(mDirection * mSpeed * Time.deltaTime);
     }
 
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        EnemyActor enemy = other.gameObject.GetComponent<EnemyActor>();
+        if (enemy != null)
+        {
+            enemy.IsHit();
+            Destroy(gameObject);
+        }
+    }
+
     //setteri
 
     public void SetDirection(Vector2 _direction)

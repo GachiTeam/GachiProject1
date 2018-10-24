@@ -55,6 +55,9 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\api\GenericActor.cs" />
      <Compile Include="Assets\Scripts\api\GenericBehavior.cs" />
+     <Compile Include="Assets\Scripts\api\IEnemy.cs" />
+     <Compile Include="Assets\Scripts\api\IHitable.cs" />
+     <Compile Include="Assets\Scripts\api\IPlayer.cs" />
      <Compile Include="Assets\Scripts\imp\Behaviors\PhysicsBehavior.cs" />
      <Compile Include="Assets\Scripts\imp\Combat\Behaviors\BasicAttackBehavior.cs" />
      <Compile Include="Assets\Scripts\imp\Combat\Behaviors\OilPotBehavior.cs" />
@@ -63,16 +66,19 @@
      <Compile Include="Assets\Scripts\imp\Combat\Components\BasicAbilities\ProjectileComponent.cs" />
      <Compile Include="Assets\Scripts\imp\Combat\Components\KamiAbilities\OilPotComponent.cs" />
      <Compile Include="Assets\Scripts\imp\Combat\Components\KamiAbilities\OilStainComponent.cs" />
-     <Compile Include="Assets\Scripts\imp\Enemy\EnemyActor.cs" />
-     <Compile Include="Assets\Scripts\imp\Enemy\GenericEnemyActor.cs" />
      <Compile Include="Assets\Scripts\imp\Enemy\GenericEnemyBehavior.cs" />
+     <Compile Include="Assets\Scripts\imp\Enemy\MeleEnemyActor.cs" />
      <Compile Include="Assets\Scripts\imp\Player\ArcherActor.cs" />
      <Compile Include="Assets\Scripts\imp\Player\Behaviors\PlayerBehavior.cs" />
      <Compile Include="Assets\Scripts\imp\Player\InputManagerData.cs" />
-     <Compile Include="Assets\Scripts\imp\Player\PlayerActor.cs" />
      <Compile Include="Assets\Scripts\imp\Player\SamuraiActor.cs" />
+     <Compile Include="Assets\Scripts\imp\World\CameraActor.cs" />
+     <Compile Include="Assets\Scripts\imp\World\GlobalSpriteReference.cs" />
      <Compile Include="Assets\Scripts\imp\World\PlayerReference.cs" />
+     <Compile Include="Assets\Scripts\imp\World\WallTriggerLeft.cs" />
+     <Compile Include="Assets\Scripts\imp\World\WallTriggerRight.cs" />
      <Compile Include="Assets\Scripts\old arhitecture\CameraController.cs" />
+     <Compile Include="Assets\Scripts\old arhitecture\EnemyActor.cs" />
      <Compile Include="Assets\Scripts\old arhitecture\EnemyController.cs" />
      <Compile Include="Assets\Scripts\old arhitecture\Hook.cs" />
      <Compile Include="Assets\Scripts\old arhitecture\MovingObject.cs" />

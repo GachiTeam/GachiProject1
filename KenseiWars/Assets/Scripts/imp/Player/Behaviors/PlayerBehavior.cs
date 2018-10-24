@@ -7,9 +7,8 @@ public class PlayerBehavior : GenericBehavior
     //referinte la componente ale obiectului
     public Transform mBasicAttackPrefab;
 
-    private SpriteRenderer mSwordSpriteReneder;
-    private PhysicsBehavior b_PhysicsBehavior;
-    private BasicAttackBehavior b_BasicAttackBehavior;
+    public PhysicsBehavior b_PhysicsBehavior;
+    public BasicAttackBehavior b_BasicAttackBehavior;
 
     //proprietati
     private enum DIRECTION : int { LEFT = 1, RIGHT = 2 };
@@ -20,34 +19,20 @@ public class PlayerBehavior : GenericBehavior
     protected Vector2 mTargetingVector;
     public bool mIsTargeting = false;
 
-    //mele attack shit. FOARTE IMPORTANT!!! MODULARIZEAZA ATACUL!!!!
-    private bool mCanMeleAttack = true;
-    private bool mIsMeleAttackOnCooldown = false;
-    private float mMeleAttackPassedTime = 0;
-    private float mMeleAttackTime = 0.25f;
-
-    //sword animation
-    private float mSwordRotatingTime = 0.1f;
-    private float mSwordTimeSpent = 0;
-    private int mSwordState = 0;
-
     //Poate vrei sa restrictionezi constructorul default?
     private PlayerBehavior() { }
 
     //Constructorul bun
 
-    public PlayerBehavior(GameObject gameObject, Transform basicAttackPrefab)
+    public PlayerBehavior(GameObject _gameObject, Transform _basicAttackPrefab)
     {
-        mGameObject = gameObject;
+        mGameObject = _gameObject;
         mTransform = mGameObject.transform;
-        mBasicAttackPrefab = basicAttackPrefab;
+        mBasicAttackPrefab = _basicAttackPrefab;
 
         mMaxSpeed = PlayerReference.instance.playerMaxSpeed;
         mJumpTakeOffSpeed = PlayerReference.instance.playerMaxJump;
-    }
 
-    protected override void StartMyBehavior()
-    {
         b_PhysicsBehavior = new PhysicsBehavior(mGameObject, mGameObject.GetComponent<Rigidbody2D>());
         b_BasicAttackBehavior = new BasicAttackBehavior(mBasicAttackPrefab);
 
@@ -65,7 +50,6 @@ public class PlayerBehavior : GenericBehavior
         MeleAttack();
         FacingDirection();
         TargetingVector();
-        Cooldown();
     }
 
     void TargetingVector()
@@ -76,8 +60,8 @@ public class PlayerBehavior : GenericBehavior
             Vector2 rawDirection = new Vector2(Input.GetAxis(mInput.joystickHorizontal), -Input.GetAxis(mInput.joystickVertical));
             mTargetingVector = rawDirection.normalized;
 
-            mTransform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
-            Transform targetingTransform = mTransform.GetChild(1);
+            mTransform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
+            Transform targetingTransform = mTransform.GetChild(0);
 
             float zAxis = Vector2.Angle(Vector2.right, mTargetingVector) * (Input.GetAxis(mInput.joystickVertical) > 0 ? -1 : 1);
 
@@ -93,26 +77,17 @@ public class PlayerBehavior : GenericBehavior
         {
             mIsTargeting = false;
 
-            mTransform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+            mTransform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
         }
     }
 
     void MeleAttack()
     {
-        if (mCanMeleAttack == true && mIsMeleAttackOnCooldown == false)
+        if (Input.GetAxis(mInput.x) != 0)
         {
-            if (Input.GetAxis(mInput.x) != 0)
-            {
-                Vector2 position = mTransform.position;
-                position.x += 2.1f * (mFacingDirection == DIRECTION.RIGHT ? 1 : -1);
-                b_BasicAttackBehavior.Attack(position, 0.01f);
-
-                //for sword animation
-                mSwordState = 1;
-            }
-
-            SwordAnimation();
-            mIsMeleAttackOnCooldown = true;
+            Vector2 position = mTransform.position;
+            position.x += 2.1f * (mFacingDirection == DIRECTION.RIGHT ? 1 : -1);
+            b_BasicAttackBehavior.Attack(position, 0.1f);
         }
     }
 
@@ -146,70 +121,13 @@ public class PlayerBehavior : GenericBehavior
         {
             mFacingDirection = DIRECTION.RIGHT;
             mTargetingVector = Vector2.right;
+            b_BasicAttackBehavior.SetIsFacingRight(true);
         }
         if (b_PhysicsBehavior.GetVelocity().x < 0)
         {
             mFacingDirection = DIRECTION.LEFT;
             mTargetingVector = Vector2.left;
-        }
-
-        Transform sword = mTransform.GetChild(0);
-        Transform swordSpriteTransform = sword.GetChild(0);
-
-        SpriteRenderer mSwordSpriteReneder = mTransform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>();
-
-        mSwordSpriteReneder.flipX = mFacingDirection == DIRECTION.LEFT ? true : false;
-
-        if (swordSpriteTransform.localPosition.x < 0 && mFacingDirection == DIRECTION.RIGHT)
-        {
-            swordSpriteTransform.localPosition = new Vector3(swordSpriteTransform.localPosition.x * (-1), swordSpriteTransform.localPosition.y, -0.1f);
-        }
-        else if (swordSpriteTransform.localPosition.x > 0 && mFacingDirection == DIRECTION.LEFT)
-        {
-            swordSpriteTransform.localPosition = new Vector3(swordSpriteTransform.localPosition.x * (-1), swordSpriteTransform.localPosition.y, -0.1f);
-        }
-    }
-
-    void SwordAnimation()
-    {
-        if (mSwordState == 1)
-        {
-            mSwordTimeSpent = mSwordTimeSpent + Time.deltaTime;
-
-            if (mFacingDirection == DIRECTION.RIGHT)
-            {
-                mTransform.GetChild(0).Rotate(Vector3.back, 800 * Time.deltaTime);
-            }
-            else
-            {
-                mTransform.GetChild(0).Rotate(Vector3.forward, 800 * Time.deltaTime);
-            }
-
-            if (mSwordTimeSpent > mSwordRotatingTime)
-            {
-                mSwordTimeSpent = 0;
-                mSwordState = 2;
-            }
-        }
-        else if (mSwordState == 2)
-        {
-            mSwordTimeSpent = mSwordTimeSpent + Time.deltaTime;
-
-            if (mFacingDirection == DIRECTION.RIGHT)
-            {
-                mTransform.GetChild(0).Rotate(Vector3.forward, 800 * Time.deltaTime);
-            }
-            else
-            {
-                mTransform.GetChild(0).Rotate(Vector3.back, 800 * Time.deltaTime);
-            }
-
-            if (mSwordTimeSpent > mSwordRotatingTime)
-            {
-                mSwordTimeSpent = 0;
-                mSwordState = 0;
-                mTransform.GetChild(0).rotation = Quaternion.identity;
-            }
+            b_BasicAttackBehavior.SetIsFacingRight(false);
         }
     }
 
@@ -218,26 +136,18 @@ public class PlayerBehavior : GenericBehavior
         mInput = new InputManagerData(_joystickID);
     }
 
-    void Cooldown()
-    {
-        if(mIsMeleAttackOnCooldown == true)
-        {
-            mMeleAttackPassedTime += Time.deltaTime;
-            if(mMeleAttackPassedTime>mMeleAttackTime)
-            {
-                mMeleAttackPassedTime = 0;
-                mIsMeleAttackOnCooldown = false;
-            }
-        }
-    }
-
     public void SetCanMeleAttack(bool _canMeleAttack)
     {
-        mCanMeleAttack = _canMeleAttack;
+        b_BasicAttackBehavior.SetCanMeleAttack(_canMeleAttack);
     }
 
     public bool IsFacingDirectionRight()
     {
         return mFacingDirection == DIRECTION.RIGHT;
+    }
+
+    public void SetMeleAttackTime(float _meleAttackTime)
+    {
+        b_BasicAttackBehavior.SetMeleAttackTime(_meleAttackTime);
     }
 }

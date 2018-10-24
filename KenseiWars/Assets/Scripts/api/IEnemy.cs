@@ -1,0 +1,4 @@
+﻿interface IEnemy
+{
+    void IsHit();
+}

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ArcherActor: GenericActor
+                        , IPlayer
 {
     //referinte la componente ale obiectului
     public Transform mShootingPrefab;
@@ -31,6 +32,8 @@ public class ArcherActor: GenericActor
         mBehaviorsList.Add(b_PlayerBehavior);
         mBehaviorsList.Add(b_ShootingBehavior);
         mBehaviorsList.Add(b_OilPotBehavior);
+
+        b_PlayerBehavior.SetMeleAttackTime(0.6f);
     }
 
     protected override void UpdateActor()
