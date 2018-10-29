@@ -6,10 +6,11 @@ public class BasicAttackComponent : MonoBehaviour
 {
     private float mLifeSpan = 3.0f;
     private float mTimePassed = 0.0f;
+    private List<string> mHitableTagList;
 
     // Use this for initialization
     void Start()
-    {}
+    { }
 
     // Update is called once per frame
     void Update()
@@ -30,10 +31,25 @@ public class BasicAttackComponent : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        IHitable enemy = other.gameObject.GetComponent<IHitable>();
-        if (enemy != null)
+        for (int i = 0; i < mHitableTagList.Count; ++i)
         {
-            enemy.IsHit();
+            if(mHitableTagList[i] == other.tag)
+            {
+                IHitable enemy = other.gameObject.GetComponent<IHitable>();
+                if (enemy != null)
+                {
+                    enemy.IsHit();
+                }
+            }
+        }
+    }
+
+    public void SetHitableTagList(List<string> _hitableTagList)
+    {
+        mHitableTagList = new List<string>();
+        for (int i = 0; i < _hitableTagList.Count; ++i)
+        {
+            mHitableTagList.Add(_hitableTagList[i]);
         }
     }
 }

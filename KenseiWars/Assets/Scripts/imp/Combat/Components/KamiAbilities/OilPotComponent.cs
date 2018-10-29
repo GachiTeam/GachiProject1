@@ -29,7 +29,7 @@ public class OilPotComponent : MonoBehaviour
             oilStainTransform = Object.Instantiate(mOilStainPrefab, transform.position, Quaternion.identity);
             oilStainInstance = oilStainTransform.gameObject.GetComponent<OilStainComponent>();
 
-            oilStainInstance.SetLifeSpan(30f);
+            oilStainInstance.SetLifeSpan(10f);
             Destroy(gameObject);
         }
     }
@@ -43,6 +43,6 @@ public class OilPotComponent : MonoBehaviour
 
     public void SetProjectileSpeed(float _speed)
     {
-        //mSpeed = _speed;
+        mSpeed = _speed;
     }
 }

@@ -38,7 +38,7 @@ public class ShootingBehavior : GenericBehavior
         ProjectileComponent projectileInstance;
         Transform projectileTransform;
 
-        projectileTransform = Object.Instantiate(mProjectilePrefab, _position, Quaternion.identity);
+        projectileTransform = Object.Instantiate(mProjectilePrefab, new Vector3(_position.x, _position.y, -2), Quaternion.identity);
         projectileInstance = projectileTransform.gameObject.GetComponent<ProjectileComponent>();
 
         projectileInstance.SetLifeSpan(_lifeSpam);

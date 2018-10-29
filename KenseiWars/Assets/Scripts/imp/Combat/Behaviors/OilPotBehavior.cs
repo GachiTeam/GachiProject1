@@ -38,7 +38,7 @@ public class OilPotBehavior : GenericBehavior
         OilPotComponent OilPotInstance;
         Transform OilPotTransform;
 
-        OilPotTransform = Object.Instantiate(mOilPotPrefab, _position, Quaternion.identity);
+        OilPotTransform = Object.Instantiate(mOilPotPrefab, new Vector3(_position.x, _position.y, -6), Quaternion.identity);
         OilPotInstance = OilPotTransform.gameObject.GetComponent<OilPotComponent>();
 
         OilPotInstance.SetProjectileSpeed(_speed);

@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{E8B92A3D-20BC-CBF3-194E-2A6AF46B5421}</ProjectGuid>
+    <ProjectGuid>{507F71F0-F893-5A2F-F4EA-B5465212E172}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -56,14 +56,18 @@
      <Compile Include="Assets\Scripts\api\GenericActor.cs" />
      <Compile Include="Assets\Scripts\api\GenericBehavior.cs" />
      <Compile Include="Assets\Scripts\api\IEnemy.cs" />
+     <Compile Include="Assets\Scripts\api\IFireBreathHitable.cs" />
      <Compile Include="Assets\Scripts\api\IHitable.cs" />
+     <Compile Include="Assets\Scripts\api\IOilStainHitable.cs" />
      <Compile Include="Assets\Scripts\api\IPlayer.cs" />
      <Compile Include="Assets\Scripts\imp\Behaviors\PhysicsBehavior.cs" />
      <Compile Include="Assets\Scripts\imp\Combat\Behaviors\BasicAttackBehavior.cs" />
+     <Compile Include="Assets\Scripts\imp\Combat\Behaviors\FireBreathBehavior.cs" />
      <Compile Include="Assets\Scripts\imp\Combat\Behaviors\OilPotBehavior.cs" />
      <Compile Include="Assets\Scripts\imp\Combat\Behaviors\ShootingBehavior.cs" />
      <Compile Include="Assets\Scripts\imp\Combat\Components\BasicAbilities\BasicAttackComponent.cs" />
      <Compile Include="Assets\Scripts\imp\Combat\Components\BasicAbilities\ProjectileComponent.cs" />
+     <Compile Include="Assets\Scripts\imp\Combat\Components\KamiAbilities\FireBreathComponent.cs" />
      <Compile Include="Assets\Scripts\imp\Combat\Components\KamiAbilities\OilPotComponent.cs" />
      <Compile Include="Assets\Scripts\imp\Combat\Components\KamiAbilities\OilStainComponent.cs" />
      <Compile Include="Assets\Scripts\imp\Enemy\GenericEnemyBehavior.cs" />
@@ -77,17 +81,6 @@
      <Compile Include="Assets\Scripts\imp\World\PlayerReference.cs" />
      <Compile Include="Assets\Scripts\imp\World\WallTriggerLeft.cs" />
      <Compile Include="Assets\Scripts\imp\World\WallTriggerRight.cs" />
-     <Compile Include="Assets\Scripts\old arhitecture\CameraController.cs" />
-     <Compile Include="Assets\Scripts\old arhitecture\EnemyActor.cs" />
-     <Compile Include="Assets\Scripts\old arhitecture\EnemyController.cs" />
-     <Compile Include="Assets\Scripts\old arhitecture\Hook.cs" />
-     <Compile Include="Assets\Scripts\old arhitecture\MovingObject.cs" />
-     <Compile Include="Assets\Scripts\old arhitecture\PhysicsObject.cs" />
-     <Compile Include="Assets\Scripts\old arhitecture\PlayerController.cs" />
-     <Compile Include="Assets\Scripts\old arhitecture\PlayerController2.cs" />
-     <Compile Include="Assets\Scripts\old arhitecture\PlayerPlatformerController.cs" />
-     <Compile Include="Assets\Scripts\old arhitecture\Prefabs\BloodParticle.cs" />
-     <Compile Include="Assets\Scripts\old arhitecture\Prefabs\HookInstance.cs" />
      <Compile Include="Assets\Scripts\test\JoystickTester.cs" />
      <Compile Include="Assets\Scripts\test\JoystickTester20.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
@@ -145,16 +138,16 @@
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Sprite.shader" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface.shader" />
  <Reference Include="UnityEditor.StandardEvents">
- <HintPath>C:/Users/Tony_2/Desktop/workspace/PlayingWithGit/Tony's workspace/Epic Games Inc/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
+ <HintPath>C:/Users/Tony_2/Desktop/workspace/GachiWorkspace/GachiProject1/KenseiWars/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
  </Reference>
  <Reference Include="Unity.TextMeshPro.Editor">
- <HintPath>C:/Users/Tony_2/Desktop/workspace/PlayingWithGit/Tony's workspace/Epic Games Inc/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+ <HintPath>C:/Users/Tony_2/Desktop/workspace/GachiWorkspace/GachiProject1/KenseiWars/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.PackageManagerUI.Editor">
- <HintPath>C:/Users/Tony_2/Desktop/workspace/PlayingWithGit/Tony's workspace/Epic Games Inc/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
+ <HintPath>C:/Users/Tony_2/Desktop/workspace/GachiWorkspace/GachiProject1/KenseiWars/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.TextMeshPro">
- <HintPath>C:/Users/Tony_2/Desktop/workspace/PlayingWithGit/Tony's workspace/Epic Games Inc/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+ <HintPath>C:/Users/Tony_2/Desktop/workspace/GachiWorkspace/GachiProject1/KenseiWars/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.AIModule">
  <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>

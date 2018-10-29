@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MeleEnemyActor : GenericActor
-                               , IHitable
+                            , IHitable
+                            , IFireBreathHitable
+                            , IOilStainHitable
 {
     //referinte la componente ale obiectului
     public Sprite mIsHitSprite; //sprite de lovit
@@ -36,5 +38,20 @@ public class MeleEnemyActor : GenericActor
     void IHitable.IsHit()
     {
         b_GenericEnemyActor.IsHit();
+    }
+
+    void IFireBreathHitable.IsHitByFireBreath()
+    {
+        b_GenericEnemyActor.IsHitByFireBreath();
+    }
+
+    void IOilStainHitable.IsInOilStain()
+    {
+        b_GenericEnemyActor.mMaxSpeed /= 2;
+    }
+
+    void IOilStainHitable.IsOutOfoilStain()
+    {
+        b_GenericEnemyActor.mMaxSpeed *= 2;
     }
 }

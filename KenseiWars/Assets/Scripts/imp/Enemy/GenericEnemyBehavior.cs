@@ -43,12 +43,16 @@ public class GenericEnemyBehavior : GenericBehavior
         b_PhysicsBehavior = new PhysicsBehavior(mGameObject, mGameObject.GetComponent<Rigidbody2D>());
         b_BasicAttackBehavior = new BasicAttackBehavior(_basicAttackPrefab);
         mTargetTrasform = PlayerReference.instance.player.transform;
+        b_BasicAttackBehavior.AddHitableTag("player");
 
         mBehaviorsList.Add(b_PhysicsBehavior);
         mBehaviorsList.Add(b_BasicAttackBehavior);
 
         mIsHitSprite = GlobalSpriteReference.instance.EnemyHit;
         mNormalSprite = GlobalSpriteReference.instance.EnemyNormal;
+
+        //manarie urata
+        b_BasicAttackBehavior.mIsEnemy = true;
     }
 
     // Use this for initialization
@@ -100,6 +104,14 @@ public class GenericEnemyBehavior : GenericBehavior
     {
         if (mIsInMeleRange == true)
         {
+            if(mFacingDirection == DIRECTION.RIGHT)
+            {
+                b_BasicAttackBehavior.SetIsFacingRight(true);
+            }
+            else
+            {
+                b_BasicAttackBehavior.SetIsFacingRight(false);
+            }
             Vector2 position = mTransform.position;
             position.x += 2.1f * (mFacingDirection == DIRECTION.RIGHT ? 1 : -1);
             b_BasicAttackBehavior.Attack(position, 0.1f);
@@ -126,6 +138,36 @@ public class GenericEnemyBehavior : GenericBehavior
         yield return new WaitForSeconds(0.05f);
 
         mGameObject.GetComponent<SpriteRenderer>().sprite = mNormalSprite;
+    }
+
+    public void IsHitByFireBreath()
+    {
+        mGameObject.GetComponent<MeleEnemyActor>().StartCoroutine(IsHitByFireBreathCoroutine());//hacks dar are sens
+    }
+
+    public IEnumerator IsHitByFireBreathCoroutine()
+    {
+        b_PhysicsBehavior.SetCanMove(false);
+
+        mHP -= 3;
+        if (mHP < 0)
+        {
+            Object.Destroy(mGameObject);
+        }
+
+        mGameObject.GetComponent<SpriteRenderer>().sprite = mIsHitSprite;
+        
+        b_BasicAttackBehavior.SetMeleAttackPassedTime(0);
+        yield return new WaitForSeconds(0.05f);
+
+        mGameObject.GetComponent<SpriteRenderer>().sprite = mNormalSprite;
+
+        b_BasicAttackBehavior.SetMeleAttackPassedTime(0);
+        yield return new WaitForSeconds(1.5f);
+
+        b_BasicAttackBehavior.SetMeleAttackPassedTime(0);
+
+        b_PhysicsBehavior.SetCanMove(true);
     }
 
     private void UpdateTarget()

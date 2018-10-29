@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ArcherActor: GenericActor
                         , IPlayer
+                        , IHitable
 {
     //referinte la componente ale obiectului
     public Transform mShootingPrefab;
@@ -20,6 +21,11 @@ public class ArcherActor: GenericActor
     private float mRangedAttackPassedTime = 0;
     private float mRangedAttackTime = 1f;
 
+    //cooldown
+    private bool mIsOilPotOnCooldown = false;
+    private float mOilPotCooldownPassedTime = 0;
+    private float mOilPotCooldownTime = 7f;
+
     protected override void StartActor()
     {
         b_PlayerBehavior = new PlayerBehavior(gameObject, mBasicAttackPrefab);
@@ -34,6 +40,7 @@ public class ArcherActor: GenericActor
         mBehaviorsList.Add(b_OilPotBehavior);
 
         b_PlayerBehavior.SetMeleAttackTime(0.6f);
+        gameObject.GetComponent<SpriteRenderer>().flipX = true;
     }
 
     protected override void UpdateActor()
@@ -56,7 +63,7 @@ public class ArcherActor: GenericActor
             {
                 direction = new Vector2(Input.GetAxis(mInput.joystickHorizontal), -Input.GetAxis(mInput.joystickVertical));
             }
-            b_ShootingBehavior.Shoot(transform.position, direction, 10f, 5f);
+            b_ShootingBehavior.Shoot(transform.position, direction, 25f, 5f);
 
             mIsRangedAttackOnCooldown = true;
         }
@@ -73,11 +80,23 @@ public class ArcherActor: GenericActor
 
     void OilPot()
     {
-        if (Input.GetAxis(mInput.b) != 0)
+        if (Input.GetAxis(mInput.b) != 0 && mIsOilPotOnCooldown == false  && b_PlayerBehavior.mIsTargeting == true)
         {
             Vector2 direction = new Vector2(Input.GetAxis(mInput.joystickHorizontal), -Input.GetAxis(mInput.joystickVertical));
-            b_OilPotBehavior.Shoot(new Vector2(transform.position.x, transform.position.y), direction, 1f);
+            //caca
+            if (Input.GetAxis(mInput.joystickHorizontal) == 0 && Input.GetAxis(mInput.joystickVertical) == 0)
+            {
+                direction = new Vector2(b_PlayerBehavior.IsFacingDirectionRight() == true ? 1 : -1, 0);
+            }
+            b_OilPotBehavior.Shoot(new Vector2(transform.position.x, transform.position.y), direction, 3f);
+
+            mIsOilPotOnCooldown = true;
         }
+    }
+
+    void IHitable.IsHit()
+    {
+        b_PlayerBehavior.IsHit();
     }
 
     void Cooldown()
@@ -90,6 +109,16 @@ public class ArcherActor: GenericActor
             {
                 mRangedAttackPassedTime = 0;
                 mIsRangedAttackOnCooldown = false;
+            }
+        }
+
+        if (mIsOilPotOnCooldown == true)
+        {
+            mOilPotCooldownPassedTime += Time.deltaTime;
+            if (mOilPotCooldownPassedTime > mOilPotCooldownTime)
+            {
+                mOilPotCooldownPassedTime = 0;
+                mIsOilPotOnCooldown = false;
             }
         }
     }

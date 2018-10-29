@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Ground
   - CameraWall
+  - player
+  - enemy
+  - oil
   layers:
   - Default
   - TransparentFX

@@ -56,7 +56,7 @@ public class CameraActor : MonoBehaviour
             //mRigidbody.position = Vector3.MoveTowards(transform.position, new Vector3(mPlayerCenter_x + 1, transform.position.y, transform.position.z), 10 );//* Time.deltaTime
             transform.position = Vector3.Slerp(transform.position, newPos, 0.5f);
             */
-            if (mCameraLookAtDistance == 0)
+            if (mCameraLookAtDistance < 1.7f)
             {
                 Vector3 desiredPosition = mLookAtPosition + mOffset;
                 Vector3 smoothedPosition = Vector3.Slerp(mLookAtPosition, desiredPosition, smoothSpeed);
@@ -64,7 +64,7 @@ public class CameraActor : MonoBehaviour
             }
             else
             {
-                transform.position = Vector3.MoveTowards(transform.position, new Vector3(mPlayerCenter_x, transform.position.y, transform.position.z), 1 * Time.deltaTime);//* Time.deltaTime
+                transform.position = Vector3.MoveTowards(transform.position, new Vector3(mPlayerCenter_x, transform.position.y, transform.position.z), 6 * Time.deltaTime);//* Time.deltaTime
             }
         }
     }

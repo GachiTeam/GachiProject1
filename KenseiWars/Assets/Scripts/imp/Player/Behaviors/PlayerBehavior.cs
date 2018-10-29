@@ -18,6 +18,9 @@ public class PlayerBehavior : GenericBehavior
     public InputManagerData mInput;
     protected Vector2 mTargetingVector;
     public bool mIsTargeting = false;
+    private Sprite mNormalSprite;
+    private Sprite mIsHitSprite;
+    private bool mCacatBool = false;
 
     //Poate vrei sa restrictionezi constructorul default?
     private PlayerBehavior() { }
@@ -35,12 +38,16 @@ public class PlayerBehavior : GenericBehavior
 
         b_PhysicsBehavior = new PhysicsBehavior(mGameObject, mGameObject.GetComponent<Rigidbody2D>());
         b_BasicAttackBehavior = new BasicAttackBehavior(mBasicAttackPrefab);
+        b_BasicAttackBehavior.AddHitableTag("enemy");
 
         mBehaviorsList.Add(b_PhysicsBehavior);
         mBehaviorsList.Add(b_BasicAttackBehavior);
 
         mFacingDirection = DIRECTION.RIGHT;
         mTargetingVector = Vector2.right;
+
+        mNormalSprite = mGameObject.GetComponent<SpriteRenderer>().sprite;
+        mIsHitSprite = GlobalSpriteReference.instance.EnemyHit;
     }
 
     protected override void UpdateMyBehavior()
@@ -54,10 +61,11 @@ public class PlayerBehavior : GenericBehavior
 
     void TargetingVector()
     {
-        if (Input.GetAxis(mInput.triggers) < 0)
+        if (Input.GetAxis(mInput.triggers) < 0 && b_PhysicsBehavior.GetCanMove() == true)
         {
             mIsTargeting = true;
             Vector2 rawDirection = new Vector2(Input.GetAxis(mInput.joystickHorizontal), -Input.GetAxis(mInput.joystickVertical));
+           
             mTargetingVector = rawDirection.normalized;
 
             mTransform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
@@ -109,7 +117,7 @@ public class PlayerBehavior : GenericBehavior
 
     void Jump()
     {
-        if (Input.GetButtonDown(mInput.a))
+        if (Input.GetButtonDown(mInput.a) && b_PhysicsBehavior.GetCanMove() == true)
         {
             b_PhysicsBehavior.Jump(mJumpTakeOffSpeed);
         }
@@ -119,16 +127,53 @@ public class PlayerBehavior : GenericBehavior
     {
         if (b_PhysicsBehavior.GetVelocity().x > 0)
         {
-            mFacingDirection = DIRECTION.RIGHT;
+            if (mFacingDirection == DIRECTION.LEFT)
+                mCacatBool = true;
+                mFacingDirection = DIRECTION.RIGHT;
             mTargetingVector = Vector2.right;
             b_BasicAttackBehavior.SetIsFacingRight(true);
         }
         if (b_PhysicsBehavior.GetVelocity().x < 0)
         {
+            if (mFacingDirection == DIRECTION.RIGHT)
+                mCacatBool = true;
             mFacingDirection = DIRECTION.LEFT;
             mTargetingVector = Vector2.left;
             b_BasicAttackBehavior.SetIsFacingRight(false);
         }
+        if(mCacatBool==true)
+        {
+
+            if (mGameObject.GetComponent<SpriteRenderer>().flipX == true)
+                mGameObject.GetComponent<SpriteRenderer>().flipX = false;
+            else
+                mGameObject.GetComponent<SpriteRenderer>().flipX = true;
+            mCacatBool = false;
+        }
+    }
+
+    public void IsHit()
+    {
+        mGameObject.GetComponent<GenericActor>().StartCoroutine(IsHitCoroutine());//hacks dar are sens
+    }
+
+    public IEnumerator IsHitCoroutine()
+    {
+        /*
+        mHP--;
+        if (mHP < 0)
+        {
+            Object.Destroy(mGameObject);
+        }
+        */
+
+        b_BasicAttackBehavior.SetMeleAttackPassedTime(0);
+
+        mGameObject.GetComponent<SpriteRenderer>().sprite = mIsHitSprite;
+
+        yield return new WaitForSeconds(0.05f);
+
+        mGameObject.GetComponent<SpriteRenderer>().sprite = mNormalSprite;
     }
 
     public void SetInput(int _joystickID)
@@ -149,5 +194,10 @@ public class PlayerBehavior : GenericBehavior
     public void SetMeleAttackTime(float _meleAttackTime)
     {
         b_BasicAttackBehavior.SetMeleAttackTime(_meleAttackTime);
+    }
+
+    public void SetCanMove(bool _canMove)
+    {
+        b_PhysicsBehavior.SetCanMove(_canMove);
     }
 }

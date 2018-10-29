@@ -18,6 +18,7 @@ public class PhysicsBehavior : GenericBehavior
     private Vector2 mGroundNormal;
     private Vector2 mVelocity;
     private Vector2 mTargetVelocity;
+    private bool mCanMove = true;
 
     //containere de informatii
     private ContactFilter2D mContactFilter;
@@ -61,11 +62,14 @@ public class PhysicsBehavior : GenericBehavior
 
     void HorizontalMovement()
     {
-        Vector2 deltaPosition = mVelocity * Time.deltaTime;
-        Vector2 moveAlongGround = new Vector2(mGroundNormal.y, -mGroundNormal.x);
-        Vector2 move = moveAlongGround * deltaPosition.x;
+        if (mCanMove == true)
+        {
+            Vector2 deltaPosition = mVelocity * Time.deltaTime;
+            Vector2 moveAlongGround = new Vector2(mGroundNormal.y, -mGroundNormal.x);
+            Vector2 move = moveAlongGround * deltaPosition.x;
 
-        Movement(move, false);
+            Movement(move, false);
+        }
     }
 
     void VerticalMovement()
@@ -155,5 +159,15 @@ public class PhysicsBehavior : GenericBehavior
     public Vector2 GetVelocity()
     {
         return mVelocity;
+    }
+
+    public void SetCanMove(bool _canMove)
+    {
+        mCanMove = _canMove;
+    }
+
+    public bool GetCanMove()
+    {
+        return mCanMove;
     }
 }

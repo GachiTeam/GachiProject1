@@ -9,6 +9,7 @@ public class GlobalSpriteReference : MonoBehaviour
     public Sprite Attack1;
     public Sprite Attack2;
     public Sprite Attack3;
+    public Sprite EnemyAttack1;
 
     public Sprite EnemyNormal;
     public Sprite EnemyHit;

@@ -12,6 +12,7 @@ public class BasicAttackBehavior : GenericBehavior
     private float mComboTime;
     private float mComboBetweenTime = 2f;
     private int mMaxCombo = 1;
+    private List<string> mHitableTagList;
 
     //stare
     private bool mIsMeleAttackOnCooldown = false;
@@ -30,6 +31,9 @@ public class BasicAttackBehavior : GenericBehavior
 
     //containere
 
+    //manarie urata
+    public bool mIsEnemy = false;
+
     //Poate vrei sa restrictionezi constructorul default?
     private BasicAttackBehavior() { }
 
@@ -38,6 +42,7 @@ public class BasicAttackBehavior : GenericBehavior
     public BasicAttackBehavior(Transform _transform)
     {
         mBasicAttackPrefab = _transform;
+        mHitableTagList = new List<string>();
     }
 
     //to be called in Update()
@@ -59,10 +64,11 @@ public class BasicAttackBehavior : GenericBehavior
             BasicAttackComponent basicAttackInstance;
             Transform basicAttackTransform;
 
-            basicAttackTransform = Object.Instantiate(mBasicAttackPrefab, _position, Quaternion.identity);
+            basicAttackTransform = Object.Instantiate(mBasicAttackPrefab, new Vector3(_position.x, _position.y, -1), Quaternion.identity);
             basicAttackInstance = basicAttackTransform.gameObject.GetComponent<BasicAttackComponent>();
 
             basicAttackInstance.SetLifeSpan(_lifeSpam);
+            basicAttackInstance.SetHitableTagList(mHitableTagList);
 
             AttackSprite(basicAttackInstance.GetComponent<SpriteRenderer>());
 
@@ -98,6 +104,11 @@ public class BasicAttackBehavior : GenericBehavior
             default:
                 //Debug.Log("BasicAttackBehavior :: AttackSprite :: EROARE!!! Am primit un combo ID nedefinit");
                 break;
+        }
+
+        if(mIsEnemy == true)
+        {
+            attackSprite = GlobalSpriteReference.instance.EnemyAttack1;
         }
         _spriteRenderer.sprite = attackSprite;
     }
@@ -175,6 +186,11 @@ public class BasicAttackBehavior : GenericBehavior
     public void SetMeleAttackPassedTime(float _meleAttackPassedTime)
     {
         mMeleAttackPassedTime = _meleAttackPassedTime;
+    }
+
+    public void AddHitableTag(string _hitableTag)
+    {
+        mHitableTagList.Add(_hitableTag);
     }
     /*
     public void SetComboTime(float _comboTime)

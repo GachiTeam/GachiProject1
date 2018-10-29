@@ -28,8 +28,8 @@ public class ProjectileComponent : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        EnemyActor enemy = other.gameObject.GetComponent<EnemyActor>();
-        if (enemy != null)
+        IHitable enemy = other.gameObject.GetComponent<IHitable>();
+        if (enemy != null && other.tag == "enemy")
         {
             enemy.IsHit();
             Destroy(gameObject);
