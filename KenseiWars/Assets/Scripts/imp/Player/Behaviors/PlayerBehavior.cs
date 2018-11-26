@@ -62,6 +62,7 @@ public class PlayerBehavior : GenericBehavior
         MeleAttack();
         FacingDirection();
         TargetingVector();
+        UpdateGlobalValues();
     }
 
     protected override void FixedUpdateMyBehavior()
@@ -246,5 +247,12 @@ public class PlayerBehavior : GenericBehavior
     public Vector2 GetTargetingVector()
     {
         return mTargetingVector;
+    }
+
+    void UpdateGlobalValues()
+    {
+        mNormalSpeed = GlobalValues.instance.playerNormalSpeed;
+        mAirSpeed = GlobalValues.instance.playerAirSpeed;
+        mJumpTakeOffSpeed = GlobalValues.instance.jumpForce;
     }
 }
