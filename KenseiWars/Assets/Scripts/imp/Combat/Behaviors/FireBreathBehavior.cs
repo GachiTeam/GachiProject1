@@ -6,7 +6,6 @@ public class FireBreathBehavior : GenericBehavior
 {
     //referinte
     private Transform mFireBreathPrefab;
-    private Vector3 mEulerAngle;
 
     //proprietati
 
@@ -19,9 +18,12 @@ public class FireBreathBehavior : GenericBehavior
 
     //Constructorul bun
 
-    public FireBreathBehavior(Transform _transform)
+    public FireBreathBehavior(GameObject _gameObject, Transform _fireBreathTransform)
     {
-        mFireBreathPrefab = _transform;
+        mGameObject = _gameObject;
+        mTransform = mGameObject.transform;
+
+        mFireBreathPrefab = _fireBreathTransform;
     }
 
     //to be called in Update()
@@ -33,21 +35,17 @@ public class FireBreathBehavior : GenericBehavior
     //to be called in LateUpdate()
     protected override void LateUpdateMyBehavior() { }
 
-    public void UsingFireBreath(Vector2 _position,  float _lifespam)
+    public void UsingFireBreath(Vector3 _firebreathPosition,  float _lifespam)
     {
-        FireBreathComponent FireBreathInstance;
-        Transform FireBreathTransform;
+        FireBreathComponent fireBreathInstance;
+        Transform fireBreathTransform;
+        Transform targetingTransform;
 
-        FireBreathTransform = Object.Instantiate(mFireBreathPrefab, new Vector3(_position.x, _position.y, -1.1f), Quaternion.identity);
-        FireBreathInstance = FireBreathTransform.gameObject.GetComponent<FireBreathComponent>();
+        fireBreathTransform = Object.Instantiate(mFireBreathPrefab, _firebreathPosition, Quaternion.identity);
+        fireBreathInstance = fireBreathTransform.gameObject.GetComponent<FireBreathComponent>();
+        targetingTransform = mTransform.GetChild(0);
 
-        FireBreathTransform.eulerAngles = mEulerAngle;
-
-        FireBreathInstance.SetLifeSpan(_lifespam);
-    }
-
-    public void SetEulerAngle(Vector3 _eulerAngle)
-    {
-        mEulerAngle = _eulerAngle;
+        fireBreathTransform.eulerAngles = targetingTransform.eulerAngles;
+        fireBreathInstance.SetLifeSpan(_lifespam);
     }
 }

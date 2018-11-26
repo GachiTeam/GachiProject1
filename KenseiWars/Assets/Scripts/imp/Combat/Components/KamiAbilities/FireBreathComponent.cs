@@ -22,21 +22,12 @@ public class FireBreathComponent : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.tag == "enemy")
+        if (other.tag == "enemy" || other.tag == "oil")
         {
-            IFireBreathHitable enemy = other.gameObject.GetComponent<IFireBreathHitable>();
-            if (enemy != null)
+            IFireBreathHitable fireBreathHitable = other.gameObject.GetComponent<IFireBreathHitable>();
+            if (fireBreathHitable != null)
             {
-                enemy.IsHitByFireBreath();
-            }
-        }
-
-        if(other.tag == "oil")
-        {
-            IFireBreathHitable oil = other.gameObject.GetComponent<IFireBreathHitable>();
-            if (oil != null)
-            {
-                oil.IsHitByFireBreath();
+                fireBreathHitable.IsHitByFireBreath();
             }
         }
     }

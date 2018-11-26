@@ -11,15 +11,18 @@ public class PlayerBehavior : GenericBehavior
     public BasicAttackBehavior b_BasicAttackBehavior;
 
     //proprietati
-    private enum DIRECTION : int { LEFT = 1, RIGHT = 2 };
+    private bool mCanMove = true;
+    //private enum DIRECTION : int { LEFT = 1, RIGHT = 2 };
     DIRECTION mFacingDirection;
-    private float mMaxSpeed;
+    private float mNormalSpeed;
+    private float mAirSpeed;
     private float mJumpTakeOffSpeed;
     public InputManagerData mInput;
     protected Vector2 mTargetingVector;
-    public bool mIsTargeting = false;
+    private bool mIsTargeting = false;
     private Sprite mNormalSprite;
     private Sprite mIsHitSprite;
+
     private bool mCacatBool = false;
 
     //Poate vrei sa restrictionezi constructorul default?
@@ -33,8 +36,11 @@ public class PlayerBehavior : GenericBehavior
         mTransform = mGameObject.transform;
         mBasicAttackPrefab = _basicAttackPrefab;
 
-        mMaxSpeed = PlayerReference.instance.playerMaxSpeed;
-        mJumpTakeOffSpeed = PlayerReference.instance.playerMaxJump;
+        //mMaxSpeed = PlayerReference.instance.playerMaxSpeed;
+        mNormalSpeed = GlobalValues.instance.playerNormalSpeed;
+        mAirSpeed = GlobalValues.instance.playerAirSpeed;
+        //mJumpTakeOffSpeed = PlayerReference.instance.playerMaxJump;
+        mJumpTakeOffSpeed = GlobalValues.instance.jumpForce;
 
         b_PhysicsBehavior = new PhysicsBehavior(mGameObject, mGameObject.GetComponent<Rigidbody2D>());
         b_BasicAttackBehavior = new BasicAttackBehavior(mBasicAttackPrefab);
@@ -52,11 +58,15 @@ public class PlayerBehavior : GenericBehavior
 
     protected override void UpdateMyBehavior()
     {
-        Move();
         Jump();
         MeleAttack();
         FacingDirection();
         TargetingVector();
+    }
+
+    protected override void FixedUpdateMyBehavior()
+    {
+        Move();
     }
 
     void TargetingVector()
@@ -101,18 +111,45 @@ public class PlayerBehavior : GenericBehavior
 
     void Move()
     {
-        float direction;
+        float inputValue;
 
-        if (mIsTargeting == false)
+        inputValue = Input.GetAxis(mInput.joystickHorizontal);
+
+        if (mIsTargeting == false && inputValue != 0)
         {
-            direction = Input.GetAxis(mInput.joystickHorizontal);
+            mCanMove = true;
         }
         else
         {
-            direction = 0;
+            mCanMove = false;
         }
 
-        b_PhysicsBehavior.SetMoving(direction, mMaxSpeed);
+        if (mCanMove == true)
+        {
+            float speed;
+
+            if(b_PhysicsBehavior.GetIsGrounded() == true)
+            {
+                speed = mNormalSpeed;
+            }
+            else
+            {
+                speed = mAirSpeed;
+            }
+
+            if (inputValue > 0)
+            {
+                b_PhysicsBehavior.SetMoving(DIRECTION.RIGHT, speed);
+            }
+            else
+            {
+                b_PhysicsBehavior.SetMoving(DIRECTION.LEFT, speed);
+            }
+        }
+        else
+        {
+            b_PhysicsBehavior.SetMoving(DIRECTION.DEFAULT, 0);
+        }
     }
 
     void Jump()
@@ -199,5 +236,15 @@ public class PlayerBehavior : GenericBehavior
     public void SetCanMove(bool _canMove)
     {
         b_PhysicsBehavior.SetCanMove(_canMove);
+    }
+
+    public bool GetIsTargeting()
+    {
+        return mIsTargeting;
+    }
+
+    public Vector2 GetTargetingVector()
+    {
+        return mTargetingVector;
     }
 }

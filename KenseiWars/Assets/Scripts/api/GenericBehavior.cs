@@ -7,7 +7,6 @@ public class GenericBehavior
     //referinte
     protected GameObject mGameObject;
     protected Transform mTransform;
-    protected float maimuta = 0;
 
     //proprietati
 

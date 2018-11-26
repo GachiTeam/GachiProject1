@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PhysicsBehavior : GenericBehavior
 {
+
     //referinte la componente ale obiectului
     private Rigidbody2D mRigidbody;
 
@@ -17,7 +18,7 @@ public class PhysicsBehavior : GenericBehavior
     private bool mGrounded;
     private Vector2 mGroundNormal;
     private Vector2 mVelocity;
-    private Vector2 mTargetVelocity;
+    private float mTargetVelocity;
     private bool mCanMove = true;
 
     //containere de informatii
@@ -41,7 +42,8 @@ public class PhysicsBehavior : GenericBehavior
         mContactFilter.useTriggers = false;
         mContactFilter.SetLayerMask(Physics2D.GetLayerCollisionMask(mGameObject.layer));
         mContactFilter.useLayerMask = true;
-        mTargetVelocity = Vector2.zero;
+        mTargetVelocity = 0;
+
     }
 
     //to be called in Update()
@@ -52,8 +54,9 @@ public class PhysicsBehavior : GenericBehavior
     protected override void FixedUpdateMyBehavior()
     {
         //setup
-        mVelocity += m_GravityModifier * Physics2D.gravity * Time.deltaTime;
-        mVelocity.x = mTargetVelocity.x; //nasty
+        Vector2 gravityModifier = m_GravityModifier * Physics2D.gravity * Time.deltaTime;
+        mVelocity.y += GlobalValues.instance.gravity;
+        mVelocity.x = mTargetVelocity; //nasty
         mGrounded = false;
 
         HorizontalMovement();
@@ -134,11 +137,6 @@ public class PhysicsBehavior : GenericBehavior
         }
     }
 
-    public void SetTargetVelocity(Vector2 _targetVelocity)
-    {
-        mTargetVelocity = _targetVelocity;
-    }
-
     public void Jump(float _input)
     {
         if (mGrounded == true)
@@ -147,13 +145,24 @@ public class PhysicsBehavior : GenericBehavior
         }
     }
 
-    public void SetMoving(float _direction, float _maxSpeed)
+    public void SetMoving(DIRECTION _direction, float _speed)
     {
-        Vector2 move = Vector2.zero;
-        move.x = _direction;
+        int translatedDirection = 0;
+            
+        if (_direction == DIRECTION.DEFAULT)
+        {
+            translatedDirection = 0;
+        }
+        else if (_direction == DIRECTION.RIGHT)
+        {
+            translatedDirection = 1;
+        }
+        else
+        {
+            translatedDirection = -1;
+        }
         
-        mTargetVelocity= move * _maxSpeed;
-
+        mTargetVelocity= translatedDirection * _speed;
     }
 
     public Vector2 GetVelocity()
@@ -169,5 +178,10 @@ public class PhysicsBehavior : GenericBehavior
     public bool GetCanMove()
     {
         return mCanMove;
+    }
+
+    public bool GetIsGrounded()
+    {
+        return mGrounded;
     }
 }

@@ -24,7 +24,7 @@ public class GenericEnemyBehavior : GenericBehavior
     public float mJumpTakeOffSpeed = 7;
     private float mMaxDistance = 10;
     private float mMinDistance;
-    private enum DIRECTION : int { LEFT = 1, RIGHT = 2 };
+    //private enum DIRECTION : int { LEFT = 1, RIGHT = 2 };
     DIRECTION mFacingDirection;
 
     //Poate vrei sa restrictionezi constructorul default?
@@ -69,10 +69,22 @@ public class GenericEnemyBehavior : GenericBehavior
 
     private void MoveTowardsPlayer()
     {
-        float direction = mTargetTrasform.position.x - mTransform.position.x;
-        float distance = direction;
-        if (direction < 0)
+        float distance = mTargetTrasform.position.x - mTransform.position.x;
+        DIRECTION direction;
+        
+        if (distance == 0)
+        {
+            direction = DIRECTION.DEFAULT;
+        }
+        else if (distance < 0)
+        {
             distance *= -1;
+            direction = DIRECTION.LEFT;
+        }
+        else
+        {
+            direction = DIRECTION.RIGHT;
+        }
 
         if (distance < mMaxDistance && distance > mMinDistance)
         {

@@ -7,8 +7,8 @@ public class SamuraiActor : GenericActor
                           , IHitable
 { 
     //referinte la componente ale obiectului
-    public Transform mBasicAttackPrefab;
-    public Transform mFireBreathPrefab;
+    private Transform mBasicAttackPrefab;
+    private Transform mFireBreathPrefab;
     private InputManagerData mInput;
 
     private PlayerBehavior b_PlayerBehavior;
@@ -16,49 +16,78 @@ public class SamuraiActor : GenericActor
 
     //cooldown
     private bool mIsFireBreathOnCooldown = false;
-    private float mFireBreathCooldownPassedTime = 0;
     private float mFireBreathCooldownTime = 7f;
+    //private float mFireBreathCooldownPassedTime = 0;
 
-    private bool mIsFireBreathActive = false;
-    private float mFireBreathTime = 1.5f;
-    private float mFireBreathPassedTime = 0;
+    //private bool mIsFireBreathActive = false;
+    private float mFireBreathActiveTime = 1.5f;
+    //private float mFireBreathPassedTime = 0;
+
+    //abilities
+    private float mFireBreathLifeSpam = 1.5f;
+    private float mFireBreathPosition_Z = -1.1f;
 
     protected override void StartActor()
     {
+        //Setez referintele catre preaburi
+        mBasicAttackPrefab = GlobalPrefabReference.instance.basicAttackPrefab;
+        mFireBreathPrefab = GlobalPrefabReference.instance.fireBreathPrefab;
+
+        //Adaug ce behaviors
         b_PlayerBehavior = new PlayerBehavior(gameObject, mBasicAttackPrefab);
-        b_FireBreathBehavior = new FireBreathBehavior(mFireBreathPrefab);
-        b_PlayerBehavior.SetInput(1);
-        mInput = b_PlayerBehavior.mInput;
+        b_FireBreathBehavior = new FireBreathBehavior(gameObject, mFireBreathPrefab);
 
         mBehaviorsList.Add(b_PlayerBehavior);
         mBehaviorsList.Add(b_FireBreathBehavior);
 
+        //Setup behaviors
+        b_PlayerBehavior.SetInput(1);
         b_PlayerBehavior.SetMeleAttackTime(0.3f);
         b_PlayerBehavior.b_BasicAttackBehavior.SetMaxComboNumber(3);
+
+        //Setez membri
+        mInput = b_PlayerBehavior.mInput;
     }
 
     protected override void UpdateActor()
     {
         FireBreath();
-        Cooldown();
+        //Cooldown();
     }
 
     void FireBreath()
     {
-        if(Input.GetAxis(mInput.b) != 0 && mIsFireBreathOnCooldown ==false && b_PlayerBehavior.mIsTargeting == true)
+        if(Input.GetAxis(mInput.b) != 0 && mIsFireBreathOnCooldown ==false && b_PlayerBehavior.GetIsTargeting() == true)
         {
-            Transform targetingTransform = transform.GetChild(0);
+            Vector3 firebreathPosition = new Vector3(transform.position.x, transform.position.y, mFireBreathPosition_Z);
+            b_FireBreathBehavior.UsingFireBreath(firebreathPosition, mFireBreathLifeSpam);
 
-            b_FireBreathBehavior.SetEulerAngle(targetingTransform.eulerAngles);
-            b_FireBreathBehavior.UsingFireBreath(transform.position, 1.5f);
-
-            mIsFireBreathOnCooldown = true;
-            mIsFireBreathActive = true;
-
-            b_PlayerBehavior.SetCanMove(false);
+            //mIsFireBreathOnCooldown = true;
+            //mIsFireBreathActive = true;
+            StartCoroutine(FireBreathOnCooldown());
+            StartCoroutine(FireBreathActive());
         }
     }
 
+    IEnumerator FireBreathOnCooldown()
+    {
+        mIsFireBreathOnCooldown = true;
+
+        yield return new WaitForSeconds(mFireBreathCooldownTime);
+
+        mIsFireBreathOnCooldown = false;
+    }
+
+    IEnumerator FireBreathActive()
+    {
+        b_PlayerBehavior.SetCanMove(false);
+
+        yield return new WaitForSeconds(mFireBreathActiveTime);
+
+        b_PlayerBehavior.SetCanMove(true);
+    }
+
+    /*
     void Cooldown()
     {
         //Debug.Log(mRangedAttackPassedTime + " " + mRangedAttackTime);
@@ -84,6 +113,7 @@ public class SamuraiActor : GenericActor
             }
         }
     }
+    */
 
     void IHitable.IsHit()
     {

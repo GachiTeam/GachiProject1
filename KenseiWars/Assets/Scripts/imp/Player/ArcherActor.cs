@@ -18,13 +18,13 @@ public class ArcherActor: GenericActor
 
     //ranged attack?
     private bool mIsRangedAttackOnCooldown = false;
-    private float mRangedAttackPassedTime = 0;
-    private float mRangedAttackTime = 1f;
+    private float mRangedAttackCooldownTime = 1f;
+    //private float mRangedAttackPassedTime = 0;
 
     //cooldown
     private bool mIsOilPotOnCooldown = false;
-    private float mOilPotCooldownPassedTime = 0;
     private float mOilPotCooldownTime = 7f;
+    //private float mOilPotCooldownPassedTime = 0;
 
     protected override void StartActor()
     {
@@ -47,14 +47,15 @@ public class ArcherActor: GenericActor
     {
         Shoot();
         OilPot();
-        Cooldown();
+        //Cooldown();
     }
 
     void Shoot()
     {
-        if (Input.GetAxis(mInput.x) != 0 && b_PlayerBehavior.mIsTargeting == true && mIsRangedAttackOnCooldown == false)
+        if (Input.GetAxis(mInput.x) != 0 && b_PlayerBehavior.GetIsTargeting() == true && mIsRangedAttackOnCooldown == false)
         {
             Vector2 direction;
+            /*
             if (Input.GetAxis(mInput.joystickHorizontal) == 0 && Input.GetAxis(mInput.joystickVertical) == 0)
             {
                 direction = new Vector2(b_PlayerBehavior.IsFacingDirectionRight() == true ? 1 : -1, 0);
@@ -63,12 +64,14 @@ public class ArcherActor: GenericActor
             {
                 direction = new Vector2(Input.GetAxis(mInput.joystickHorizontal), -Input.GetAxis(mInput.joystickVertical));
             }
-            b_ShootingBehavior.Shoot(transform.position, direction, 25f, 5f);
+            */
+            b_ShootingBehavior.Shoot(transform.position, b_PlayerBehavior.GetTargetingVector(), 25f, 5f);
 
-            mIsRangedAttackOnCooldown = true;
+            //mIsRangedAttackOnCooldown = true;
+            StartCoroutine(RangedAttackOnCooldown());
         }
 
-        if(b_PlayerBehavior.mIsTargeting == true)
+        if(b_PlayerBehavior.GetIsTargeting() == true)
         {
             b_PlayerBehavior.SetCanMeleAttack(false);
         }
@@ -80,7 +83,7 @@ public class ArcherActor: GenericActor
 
     void OilPot()
     {
-        if (Input.GetAxis(mInput.b) != 0 && mIsOilPotOnCooldown == false  && b_PlayerBehavior.mIsTargeting == true)
+        if (Input.GetAxis(mInput.b) != 0 && mIsOilPotOnCooldown == false  && b_PlayerBehavior.GetIsTargeting() == true)
         {
             Vector2 direction = new Vector2(Input.GetAxis(mInput.joystickHorizontal), -Input.GetAxis(mInput.joystickVertical));
             //caca
@@ -90,7 +93,8 @@ public class ArcherActor: GenericActor
             }
             b_OilPotBehavior.Shoot(new Vector2(transform.position.x, transform.position.y), direction, 3f);
 
-            mIsOilPotOnCooldown = true;
+            //mIsOilPotOnCooldown = true;
+            StartCoroutine(OilPotOnCooldown());
         }
     }
 
@@ -99,6 +103,25 @@ public class ArcherActor: GenericActor
         b_PlayerBehavior.IsHit();
     }
 
+    IEnumerator RangedAttackOnCooldown()
+    {
+        mIsRangedAttackOnCooldown = true;
+
+        yield return new WaitForSeconds(mRangedAttackCooldownTime);
+
+        mIsRangedAttackOnCooldown = false;
+    }
+
+    IEnumerator OilPotOnCooldown()
+    {
+        mIsOilPotOnCooldown = true;
+
+        yield return new WaitForSeconds(mOilPotCooldownTime);
+
+        mIsOilPotOnCooldown = false;
+    }
+
+    /*
     void Cooldown()
     {
         //Debug.Log(mRangedAttackPassedTime + " " + mRangedAttackTime);
@@ -122,4 +145,5 @@ public class ArcherActor: GenericActor
             }
         }
     }
+    */
 }
