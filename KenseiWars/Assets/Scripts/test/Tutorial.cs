@@ -8,36 +8,52 @@ public class Tutorial : MonoBehaviour
     private Transform parentTransform;
     public float speed;
 
-    private Rigidbody rb;
+    bool jumpImpulse = false;
+    bool groundState = false;
+    bool jumpState = false;
+
+    private Rigidbody2D rb;
 
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
-        Debug.Log(transform.position.x);
+        rb = GetComponent<Rigidbody2D>();       
+    }
+
+    void Update()
+    {
+        if(jumpImpulse && groundState)
+        {
+            //rb.AddForce(new Vector2(0.0f, 5.0f));
+            rb.AddForce(Vector2.up * 300);
+            groundState = false;
+            jumpState = true;
+        }
+
+        if(jumpImpulse && jumpState)
+        {
+            //rb.AddForce(new Vector2(0.0f, 5.0f));
+            rb.AddForce(Vector2.up * 300);
+            jumpState = false;
+        }
     }
 
     void FixedUpdate()
-    {/*
-        bool moveHorizontal = Input.GetKeyDown(KeyCode.UpArrow);
-        bool moveVertical = Input.GetButton(Input.GetKeyDown(KeyCode.Space));
-        
-        */
-        if (Input.GetKey(KeyCode.UpArrow))
+    {
+        jumpImpulse = Input.GetKeyDown("space");
+        if(jumpImpulse)
         {
-            transform.position = new Vector3(transform.position.x + 0.1f, transform.position.y, transform.position.z);
-            /*
-            Vector3 movement = new Vector3(1, 0.0f, 0.0f);
-
-            rb.AddForce(movement);
-            */
-        }
-        else
-        {
-            /*
-            Vector3 movement = new Vector3(-1, 0.0f, 0.0f);
-
-            rb.AddForce(movement);
-            */
+            Debug.Log("space");
         }
     }
+
+    void OnTriggerStay2D(Collider2D other)
+    {
+        if (other.tag == "Ground" )
+        {
+            groundState = true;
+        }
+    }
+
+        
+
 }
