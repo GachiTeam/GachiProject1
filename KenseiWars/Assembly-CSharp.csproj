@@ -53,6 +53,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\brut.cs" />
      <Compile Include="Assets\Scripts\Api\GenericActor.cs" />
      <Compile Include="Assets\Scripts\Api\GenericBehavior.cs" />
      <Compile Include="Assets\Scripts\Api\IEnemy.cs" />
@@ -60,6 +61,7 @@
      <Compile Include="Assets\Scripts\Api\IHitable.cs" />
      <Compile Include="Assets\Scripts\Api\IOilStainHitable.cs" />
      <Compile Include="Assets\Scripts\Api\IPlayer.cs" />
+     <Compile Include="Assets\Scripts\Behaviors\AnimatorBehavior.cs" />
      <Compile Include="Assets\Scripts\Behaviors\BasicAttackBehavior.cs" />
      <Compile Include="Assets\Scripts\Behaviors\FireBreathBehavior.cs" />
      <Compile Include="Assets\Scripts\Behaviors\GenericEnemyBehavior.cs" />
@@ -81,6 +83,7 @@
      <Compile Include="Assets\Scripts\Player\SamuraiActor.cs" />
      <Compile Include="Assets\Scripts\Test\JoystickTester.cs" />
      <Compile Include="Assets\Scripts\Test\JoystickTester20.cs" />
+     <Compile Include="Assets\Scripts\Test\Tony\BackgroundTest.cs" />
      <Compile Include="Assets\Scripts\Test\Tutorial.cs" />
      <Compile Include="Assets\Scripts\Test\Tutorial2.cs" />
      <Compile Include="Assets\Scripts\Test\VectorAngle.cs" />
@@ -385,14 +388,14 @@
  <Reference Include="UnityEngine.SpatialTracking">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
  </Reference>
+ <Reference Include="HeroEditor.Common">
+ <HintPath>C:/Users/Tony_2/Desktop/workspace/GachiWorkspace/GachiProject1/KenseiWars/Assets/Stuff/HeroEditor/Common/HeroEditor.Common.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEngine.Analytics">
  <HintPath>C:/Users/Tony_2/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.analytics@2.0.16/UnityEngine.Analytics.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.StandardEvents">
  <HintPath>C:/Users/Tony_2/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.standardevents@1.0.13/UnityEngine.StandardEvents.dll</HintPath>
- </Reference>
- <Reference Include="HeroEditor.Common">
- <HintPath>C:/Users/Tony_2/Desktop/workspace/GachiWorkspace/GachiProject1/KenseiWars/Assets/Stuff/HeroEditor/Common/HeroEditor.Common.dll</HintPath>
  </Reference>
  <Reference Include="mscorlib">
  <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/unity/mscorlib.dll</HintPath>

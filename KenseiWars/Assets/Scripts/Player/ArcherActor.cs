@@ -146,4 +146,9 @@ public class ArcherActor: GenericActor
         }
     }
     */
+
+    public override Animator GetAnimator()
+    {
+        return transform.GetChild(0).GetChild(0).GetComponent<Animator>();
+    }
 }
