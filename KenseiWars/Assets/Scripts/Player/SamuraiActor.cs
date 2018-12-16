@@ -119,4 +119,9 @@ public class SamuraiActor : GenericActor
     {
         b_PlayerBehavior.IsHit();
     }
+    
+    public override Animator GetAnimator()
+    {
+        return transform.GetChild(0).GetChild(0).GetComponent<Animator>();
+    }
 }

@@ -36,5 +36,11 @@ public class GenericActor : MonoBehaviour
 
     protected virtual void StartActor(){}
     protected virtual void UpdateActor(){}
-    protected virtual void FixedUpdateActor(){}
+    protected virtual void FixedUpdateActor(){ }
+
+    public virtual Animator GetAnimator()
+    {
+        Debug.LogWarning("GetAnimator nu este implementat");
+        return null;
+    }
 }
