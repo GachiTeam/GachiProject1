@@ -5,12 +5,13 @@ using UnityEngine;
 public class GenericEnemyBehavior : GenericBehavior
 {
     //referinte la componente ale obiectului
-    public Sprite mIsHitSprite; //sprite de lovit
-    public Sprite mNormalSprite; //sprite normal
+    private Animator mAnimator;
+    private GenericActor mActor;
 
     public PhysicsBehavior b_PhysicsBehavior;
-    public BasicAttackBehavior b_BasicAttackBehavior;
-    private Transform mTargetTrasform; //initial player
+    private AnimatorBehavior b_AnimatorBehavior;
+
+    private Transform mTargetTransform; //initial player
     private bool mIsInMeleRange = false;
 
     //referinte externe
@@ -24,7 +25,6 @@ public class GenericEnemyBehavior : GenericBehavior
     public float mJumpTakeOffSpeed = 7;
     private float mMaxDistance = 10;
     private float mMinDistance;
-    //private enum DIRECTION : int { LEFT = 1, RIGHT = 2 };
     DIRECTION mFacingDirection;
 
     //Poate vrei sa restrictionezi constructorul default?
@@ -32,27 +32,31 @@ public class GenericEnemyBehavior : GenericBehavior
 
     //Constructorul bun
 
-    public GenericEnemyBehavior(GameObject gameObject, Transform _basicAttackPrefab)
+    public GenericEnemyBehavior(GameObject _gameObject)
     {
-        mGameObject = gameObject;
+        mGameObject = _gameObject;
         mTransform = mGameObject.transform;
-
         mSamuraiTransform = PlayerReference.instance.mSamuraiGameObject.transform;
         mArcherTransform = PlayerReference.instance.mArcherGameObject.transform;
-        
+        mTargetTransform = PlayerReference.instance.player.transform;
+        mActor = mGameObject.GetComponent<GenericActor>();
+        mAnimator = mActor.GetAnimator();
+
+        if (mActor == null)
+        {
+            Debug.LogWarning("Referinta catre Actor din GenericEnemyBehavior este null!!!");
+        }
+
+        if (mAnimator == null)
+        {
+            Debug.LogWarning("Referinta catre Animator din GenericEnemyBehavior este null!");
+        }
+
         b_PhysicsBehavior = new PhysicsBehavior(mGameObject, mGameObject.GetComponent<Rigidbody2D>());
-        b_BasicAttackBehavior = new BasicAttackBehavior(_basicAttackPrefab);
-        mTargetTrasform = PlayerReference.instance.player.transform;
-        b_BasicAttackBehavior.AddHitableTag("player");
+        b_AnimatorBehavior = new AnimatorBehavior(mGameObject, mActor);
 
         mBehaviorsList.Add(b_PhysicsBehavior);
-        mBehaviorsList.Add(b_BasicAttackBehavior);
-
-        mIsHitSprite = GlobalSpriteReference.instance.EnemyHit;
-        mNormalSprite = GlobalSpriteReference.instance.EnemyNormal;
-
-        //manarie urata
-        b_BasicAttackBehavior.mIsEnemy = true;
+        mBehaviorsList.Add(b_AnimatorBehavior);
     }
 
     // Use this for initialization
@@ -64,19 +68,20 @@ public class GenericEnemyBehavior : GenericBehavior
     protected override void UpdateMyBehavior()
     {
         MoveTowardsPlayer();
-        MeleAttack();
+        UpdateAnimations(); 
     }
 
     private void MoveTowardsPlayer()
     {
-        float distance = mTargetTrasform.position.x - mTransform.position.x;
+        float distance = mTargetTransform.position.x - mTransform.position.x;
         DIRECTION direction;
-        
+
         if (distance == 0)
         {
-            direction = DIRECTION.DEFAULT;
+            return;
         }
-        else if (distance < 0)
+
+        if (distance < 0)
         {
             distance *= -1;
             direction = DIRECTION.LEFT;
@@ -102,16 +107,17 @@ public class GenericEnemyBehavior : GenericBehavior
             b_PhysicsBehavior.SetMoving(0, 0);
         }
 
-        if (direction < 0)
+        if (direction == DIRECTION.LEFT)
         {
             mFacingDirection = DIRECTION.LEFT;
         }
-        else
+        else if(direction == DIRECTION.RIGHT)
         {
             mFacingDirection = DIRECTION.RIGHT;
         }
     }
 
+    /*
     public void MeleAttack()
     {
         if (mIsInMeleRange == true)
@@ -129,27 +135,38 @@ public class GenericEnemyBehavior : GenericBehavior
             b_BasicAttackBehavior.Attack(position, 0.1f);
         }
     }
+    */
 
     public void IsHit()
     {
-        mGameObject.GetComponent<MeleEnemyActor>().StartCoroutine(IsHitCoroutine());//hacks dar are sens
+        mActor.StartCoroutine(IsHitCoroutine());//hacks dar are sens
     }
 
     public IEnumerator IsHitCoroutine()
     {
+        b_AnimatorBehavior.PlayAnimation(ANIMATION.HIT);
+
         mHP--;
-        if (mHP < 0)
+
+        if(mHP == 0)
         {
             Object.Destroy(mGameObject);
         }
 
-        b_BasicAttackBehavior.SetMeleAttackPassedTime(0);
+        SpriteRenderer spriteRendererActor = mAnimator.GetComponent<SpriteRenderer>();
+        Material defaultMaterialActor = spriteRendererActor.material;
 
-        mGameObject.GetComponent<SpriteRenderer>().sprite = mIsHitSprite;
+        //mAnimator.GetComponent<SpriteRenderer>().material = GlobalSpriteReference.instance.EnemyHitMaterial;
+        //materialActor = GlobalSpriteReference.instance.EnemyHitMaterial;
+        spriteRendererActor.material = GlobalSpriteReference.instance.EnemyHitMaterial;
 
         yield return new WaitForSeconds(0.05f);
 
-        mGameObject.GetComponent<SpriteRenderer>().sprite = mNormalSprite;
+        //materialActor = GlobalSpriteReference.instance.SpriteDefaultMaterial;
+        //mAnimator.GetComponent<SpriteRenderer>().material = GlobalSpriteReference.instance.SpriteDefaultMaterial;
+        spriteRendererActor.material = defaultMaterialActor;
+
+        //seteaza boolul de "stun"
     }
 
     public void IsHitByFireBreath()
@@ -166,18 +183,13 @@ public class GenericEnemyBehavior : GenericBehavior
         {
             Object.Destroy(mGameObject);
         }
-
-        mGameObject.GetComponent<SpriteRenderer>().sprite = mIsHitSprite;
         
-        b_BasicAttackBehavior.SetMeleAttackPassedTime(0);
+        
         yield return new WaitForSeconds(0.05f);
-
-        mGameObject.GetComponent<SpriteRenderer>().sprite = mNormalSprite;
-
-        b_BasicAttackBehavior.SetMeleAttackPassedTime(0);
+        
+        
         yield return new WaitForSeconds(1.5f);
-
-        b_BasicAttackBehavior.SetMeleAttackPassedTime(0);
+        
 
         b_PhysicsBehavior.SetCanMove(true);
     }
@@ -195,6 +207,17 @@ public class GenericEnemyBehavior : GenericBehavior
         {
             mTransform = mArcherTransform;
         }
+    }
+
+    void UpdateAnimations()
+    {
+        bool isMoving = b_PhysicsBehavior.GetVelocity().x != 0;
+        b_AnimatorBehavior.IsMoving(isMoving);
+
+        bool isGrounded = b_PhysicsBehavior.GetIsGrounded();
+        b_AnimatorBehavior.IsGrounded(isGrounded);
+
+        b_AnimatorBehavior.SetFacingDirection(mFacingDirection);
     }
 
     public void SetMinDistance(float _minDistance)
@@ -215,10 +238,5 @@ public class GenericEnemyBehavior : GenericBehavior
     public bool GetIsInMeleRange()
     {
         return mIsInMeleRange;
-    }
-
-    public void SetMeleAttackTime(float _meleAttackTime)
-    {
-        b_BasicAttackBehavior.SetMeleAttackTime(_meleAttackTime);
     }
 }

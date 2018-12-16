@@ -8,9 +8,10 @@ public class ProjectileComponent : MonoBehaviour
     public float mSpeed = 0.2f;
     private float mTimePassed = 0.0f;
     private Vector2 mDirection = Vector2.zero;
+    private List<string> mHitableTagList;
 
-	// Use this for initialization
-	void Start ()
+    // Use this for initialization
+    void Start ()
     {}
 	
 	// Update is called once per frame
@@ -28,11 +29,19 @@ public class ProjectileComponent : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        IHitable enemy = other.gameObject.GetComponent<IHitable>();
-        if (enemy != null && other.tag == "enemy")
+        for (int i = 0; i < mHitableTagList.Count; ++i)
         {
-            enemy.IsHit();
-            Destroy(gameObject);
+            if (mHitableTagList[i] == other.tag)
+            {
+                IHitable enemy = other.gameObject.GetComponent<IHitable>();
+                if (enemy != null)
+                {
+                    enemy.IsHit();
+                    Destroy(gameObject);
+                }
+
+                break;
+            }
         }
     }
 
@@ -51,5 +60,14 @@ public class ProjectileComponent : MonoBehaviour
     public void SetLifeSpan(float _time)
     {
         mLifeSpan = _time;
+    }
+
+    public void SetHitableTagList(List<string> _hitableTagList)
+    {
+        mHitableTagList = new List<string>();
+        for (int i = 0; i < _hitableTagList.Count; ++i)
+        {
+            mHitableTagList.Add(_hitableTagList[i]);
+        }
     }
 }
