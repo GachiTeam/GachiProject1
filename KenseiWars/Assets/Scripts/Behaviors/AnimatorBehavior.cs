@@ -64,7 +64,7 @@ public class AnimatorBehavior : GenericBehavior
         }
     }
 
-    public void IsMoving(bool _isMoving)
+    public void SetIsMoving(bool _isMoving)
     {
         if (mIsMoving != _isMoving)
         {
@@ -73,7 +73,7 @@ public class AnimatorBehavior : GenericBehavior
         }
     }
 
-    public void IsGrounded(bool _isGrounded)
+    public void SetIsGrounded(bool _isGrounded)
     {
         if (mIsGrounded != _isGrounded)
         {
