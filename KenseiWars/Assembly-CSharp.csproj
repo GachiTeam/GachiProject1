@@ -74,6 +74,7 @@
      <Compile Include="Assets\Scripts\Combat\Components\KamiAbilities\FireBreathComponent.cs" />
      <Compile Include="Assets\Scripts\Combat\Components\KamiAbilities\OilPotComponent.cs" />
      <Compile Include="Assets\Scripts\Combat\Components\KamiAbilities\OilStainComponent.cs" />
+     <Compile Include="Assets\Scripts\Enemy\Archer\ArcherEnemyActor.cs" />
      <Compile Include="Assets\Scripts\Enemy\MeleEnemyActor.cs" />
      <Compile Include="Assets\Scripts\Jap Map\GenericRegion.cs" />
      <Compile Include="Assets\Scripts\Jap Map\RegionA.cs" />

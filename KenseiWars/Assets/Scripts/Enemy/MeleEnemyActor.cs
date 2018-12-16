@@ -17,12 +17,12 @@ public class MeleEnemyActor : GenericActor
 
     protected override void StartActor()
     {
-        b_GenericEnemyActor = new GenericEnemyBehavior(gameObject, mBasicAttackPrefab);
+        b_GenericEnemyActor = new GenericEnemyBehavior(gameObject);
         b_GenericEnemyActor.SetMinDistance(Randomizer(1.7f, 2f));
         b_GenericEnemyActor.SetHP(Randomizer(7f, 10f));
         b_GenericEnemyActor.SetMaxSpeed(Randomizer(0.5f, 1f));
 
-        b_GenericEnemyActor.SetMeleAttackTime(0.7f);
+        //b_GenericEnemyActor.SetMeleAttackTime(0.7f);
         //b_GenericEnemyActor.b_BasicAttackBehavior.SetMaxComboNumber(3);
 
         mBehaviorsList.Add(b_GenericEnemyActor);

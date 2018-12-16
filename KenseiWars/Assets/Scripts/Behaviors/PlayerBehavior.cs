@@ -39,7 +39,7 @@ public class PlayerBehavior : GenericBehavior
         mBasicAttackPrefab = _basicAttackPrefab;
         mTargetingTransform = mTransform.GetChild(1);
         mAnimator = mTransform.GetChild(0);
-        mActor = _gameObject.GetComponent<GenericActor>();
+        mActor = mGameObject.GetComponent<GenericActor>();
 
         if (mActor == null)
         {
@@ -48,7 +48,7 @@ public class PlayerBehavior : GenericBehavior
 
         if (mAnimator == null)
         {
-            Debug.LogWarning("player Animator is null!");
+            Debug.LogWarning("Referinta catre Animator din PlayerBehavior este null!");
         }
 
         //mMaxSpeed = PlayerReference.instance.playerMaxSpeed;

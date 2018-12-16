@@ -6,6 +6,7 @@ public class ShootingBehavior : GenericBehavior
 {
     //referinte
     private Transform mProjectilePrefab;
+    private List<string> mHitableTagList;
 
     //proprietati
 
@@ -21,6 +22,7 @@ public class ShootingBehavior : GenericBehavior
     public ShootingBehavior(Transform _transform)
     {
         mProjectilePrefab = _transform;
+        mHitableTagList = new List<string>();
     }
 
     //to be called in Update()
@@ -44,5 +46,11 @@ public class ShootingBehavior : GenericBehavior
         projectileInstance.SetLifeSpan(_lifeSpam);
         projectileInstance.SetProjectileSpeed(_speed);
         projectileInstance.SetDirection(_direction);
+        projectileInstance.SetHitableTagList(mHitableTagList);
+    }
+
+    public void AddHitableTag(string _hitableTag)
+    {
+        mHitableTagList.Add(_hitableTag);
     }
 }
