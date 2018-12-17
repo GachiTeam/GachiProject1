@@ -212,10 +212,10 @@ public class GenericEnemyBehavior : GenericBehavior
     void UpdateAnimations()
     {
         bool isMoving = b_PhysicsBehavior.GetVelocity().x != 0;
-        b_AnimatorBehavior.IsMoving(isMoving);
+        b_AnimatorBehavior.SetIsMoving(isMoving);
 
         bool isGrounded = b_PhysicsBehavior.GetIsGrounded();
-        b_AnimatorBehavior.IsGrounded(isGrounded);
+        b_AnimatorBehavior.SetIsGrounded(isGrounded);
 
         b_AnimatorBehavior.SetFacingDirection(mFacingDirection);
     }
