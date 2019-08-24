@@ -8,9 +8,11 @@ public class PlayerBehavior : GenericBehavior
     public Transform mBasicAttackPrefab;
     private Transform mTargetingTransform;
     private Transform mAnimator;
+    private GenericActor mActor;
 
     public PhysicsBehavior b_PhysicsBehavior;
     public BasicAttackBehavior b_BasicAttackBehavior;
+    private AnimatorBehavior b_AnimatorBehavior;
 
     //proprietati
     private bool mCanMove = true;
@@ -25,8 +27,6 @@ public class PlayerBehavior : GenericBehavior
     private Sprite mNormalSprite;
     private Sprite mIsHitSprite;
 
-    private bool mCacatBool = false;
-
     //Poate vrei sa restrictionezi constructorul default?
     private PlayerBehavior() { }
 
@@ -39,10 +39,16 @@ public class PlayerBehavior : GenericBehavior
         mBasicAttackPrefab = _basicAttackPrefab;
         mTargetingTransform = mTransform.GetChild(1);
         mAnimator = mTransform.GetChild(0);
+        mActor = mGameObject.GetComponent<GenericActor>();
 
-        if(mAnimator == null)
+        if (mActor == null)
         {
-            Debug.LogWarning("player Animator is null!");
+            Debug.LogWarning("Referinta catre Actor din PlayerBehavior este null!!!");
+        }
+
+        if (mAnimator == null)
+        {
+            Debug.LogWarning("Referinta catre Animator din PlayerBehavior este null!");
         }
 
         //mMaxSpeed = PlayerReference.instance.playerMaxSpeed;
@@ -53,10 +59,13 @@ public class PlayerBehavior : GenericBehavior
 
         b_PhysicsBehavior = new PhysicsBehavior(mGameObject, mGameObject.GetComponent<Rigidbody2D>());
         b_BasicAttackBehavior = new BasicAttackBehavior(mBasicAttackPrefab);
+        b_AnimatorBehavior = new AnimatorBehavior(mGameObject, mActor);
+
         b_BasicAttackBehavior.AddHitableTag("enemy");
 
         mBehaviorsList.Add(b_PhysicsBehavior);
         mBehaviorsList.Add(b_BasicAttackBehavior);
+        mBehaviorsList.Add(b_AnimatorBehavior);
 
         mFacingDirection = DIRECTION.RIGHT;
         mTargetingVector = Vector2.right;
@@ -77,6 +86,7 @@ public class PlayerBehavior : GenericBehavior
         TargetingVector();
         UpdateGlobalValues();
         Move();
+        UpdateAnimations();
     }
 
     void TargetingVector()
@@ -123,7 +133,7 @@ public class PlayerBehavior : GenericBehavior
 
     void MeleAttackAnimation()
     {
-
+        b_AnimatorBehavior.PlayAnimation(ANIMATION.ATTACK);
     }
 
     void Move()
@@ -181,28 +191,15 @@ public class PlayerBehavior : GenericBehavior
     {
         if (b_PhysicsBehavior.GetVelocity().x > 0)
         {
-            if (mFacingDirection == DIRECTION.LEFT)
-                mCacatBool = true;
-                mFacingDirection = DIRECTION.RIGHT;
+            mFacingDirection = DIRECTION.RIGHT;
             mTargetingVector = Vector2.right;
             b_BasicAttackBehavior.SetIsFacingRight(true);
         }
         if (b_PhysicsBehavior.GetVelocity().x < 0)
         {
-            if (mFacingDirection == DIRECTION.RIGHT)
-                mCacatBool = true;
             mFacingDirection = DIRECTION.LEFT;
             mTargetingVector = Vector2.left;
             b_BasicAttackBehavior.SetIsFacingRight(false);
-        }
-        if(mCacatBool==true)
-        {
-
-            if (mGameObject.GetComponent<SpriteRenderer>().flipX == true)
-                mGameObject.GetComponent<SpriteRenderer>().flipX = false;
-            else
-                mGameObject.GetComponent<SpriteRenderer>().flipX = true;
-            mCacatBool = false;
         }
     }
 
@@ -221,13 +218,29 @@ public class PlayerBehavior : GenericBehavior
         }
         */
 
+        
         b_BasicAttackBehavior.SetMeleAttackPassedTime(0);
 
-        mGameObject.GetComponent<SpriteRenderer>().sprite = mIsHitSprite;
+        //mGameObject.GetComponent<SpriteRenderer>().sprite = mIsHitSprite;
+
+        b_AnimatorBehavior.PlayAnimation(ANIMATION.HIT);
 
         yield return new WaitForSeconds(0.05f);
 
-        mGameObject.GetComponent<SpriteRenderer>().sprite = mNormalSprite;
+        //mGameObject.GetComponent<SpriteRenderer>().sprite = mNormalSprite;
+        
+
+    }
+
+    void UpdateAnimations()
+    {
+        bool isMoving = b_PhysicsBehavior.GetVelocity().x != 0;
+        b_AnimatorBehavior.SetIsMoving(isMoving);
+
+        bool isGrounded = b_PhysicsBehavior.GetIsGrounded();
+        b_AnimatorBehavior.SetIsGrounded(isGrounded);
+
+        b_AnimatorBehavior.SetFacingDirection(mFacingDirection);
     }
 
     public void SetInput(int _joystickID)

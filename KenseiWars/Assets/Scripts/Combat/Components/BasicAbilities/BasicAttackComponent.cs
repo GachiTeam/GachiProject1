@@ -40,6 +40,8 @@ public class BasicAttackComponent : MonoBehaviour
                 {
                     enemy.IsHit();
                 }
+
+                break;
             }
         }
     }

@@ -14,6 +14,10 @@ public class GlobalSpriteReference : MonoBehaviour
     public Sprite EnemyNormal;
     public Sprite EnemyHit;
 
+    public Material PlayerHit;
+    public Material EnemyHitMaterial;
+    public Material SpriteDefaultMaterial;
+
     void Awake()
     {
         if (instance == null)

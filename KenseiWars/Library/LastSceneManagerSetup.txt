@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/Tony/Art.unity
+- path: Assets/Scenes/Tony/Arcas.unity
   isLoaded: 1
   isActive: 1
