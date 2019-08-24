@@ -27,6 +27,8 @@ public class GenericEnemyBehavior : GenericBehavior
     private float mMinDistance;
     DIRECTION mFacingDirection;
 
+    private bool mIsMovingTowardsPlayer = true;
+
     //Poate vrei sa restrictionezi constructorul default?
     private GenericEnemyBehavior() { }
 
@@ -65,11 +67,14 @@ public class GenericEnemyBehavior : GenericBehavior
     }
 
     // Update is called once per frame
-    protected override void UpdateMyBehavior()
+   /* protected override void UpdateMyBehavior()
     {
-        MoveTowardsPlayer();
+        if (mIsMoveingTowardsPlayer == true)
+        {
+            MoveTowardsPlayer();
+        }
         UpdateAnimations(); 
-    }
+    }*/
 
     private void MoveTowardsPlayer()
     {
@@ -233,6 +238,11 @@ public class GenericEnemyBehavior : GenericBehavior
     public void SetMaxSpeed(float _maxSpeed)
     {
         mMaxSpeed = _maxSpeed;
+    }
+
+    public void SetIsMovingTowardsPlayer(bool _isMovingTowardsPlayer)
+    {
+        mIsMovingTowardsPlayer = _isMovingTowardsPlayer;
     }
 
     public bool GetIsInMeleRange()

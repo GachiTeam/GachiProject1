@@ -65,3 +65,4 @@ public class RegionNavigator : MonoBehaviour
         mIsNavigationThroughMapOnCooldown = false;
     }
 }
+ 

@@ -84,9 +84,11 @@
     <Compile Include="Assets\Scripts\Combat\Components\KamiAbilities\OilStainComponent.cs" />
     <Compile Include="Assets\Scripts\Enemy\Archer\ArcherEnemyActor.cs" />
     <Compile Include="Assets\Scripts\Enemy\MeleEnemyActor.cs" />
+    <Compile Include="Assets\Scripts\Enemy\Troll\TrollEnemyActor.cs" />
     <Compile Include="Assets\Scripts\Jap Map\GenericRegion.cs" />
     <Compile Include="Assets\Scripts\Jap Map\RegionA.cs" />
     <Compile Include="Assets\Scripts\Jap Map\RegionNavigator.cs" />
+    <Compile Include="Assets\Scripts\MAp.cs" />
     <Compile Include="Assets\Scripts\Player\ArcherActor.cs" />
     <Compile Include="Assets\Scripts\Player\InputManagerData.cs" />
     <Compile Include="Assets\Scripts\Player\SamuraiActor.cs" />
